@@ -27,14 +27,45 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [UsersTable, Arn]
+            - Fn::GetAtt: [AuctionsTable, Arn]
+
   environment:
     USERS_TABLE: ${param:tableName}
+    AUCTIONS_TABLE: AuctionsTable
 
 functions:
   api:
     handler: handler.handler
     events:
       - httpApi: "*"
+  
+  createAuction:    
+    handler: src/handlers/createAuction.handler    
+    events:      
+      - http:          
+          method: POST          
+          path: /auction
+
+  getAuctions:    
+    handler: src/handlers/getAuctions.handler    
+    events:      
+      - http:          
+          method: GET       
+          path: /auctions
+
+  getAuction:    
+    handler: src/handlers/getAuction.handler    
+    events:      
+      - http:          
+          method: GET       
+          path: /auction/{id}
+        
+  placeBid:    
+    handler: src/handlers/placeBid.handler    
+    events:      
+      - http:          
+          method: PATCH       
+          path: /auction/{id}/bid
 
 resources:
   Resources:
@@ -49,6 +80,18 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${param:tableName}
+
+    AuctionsTable:  # New
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: AuctionsTable
 
 custom:
   bundle:
