@@ -3,6 +3,7 @@ import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import createHttpError from 'http-errors';
 import commonMiddleware from '../lib/common.Middleware.js';
 import jsonBodyParser from '@middy/http-json-body-parser';
+import { getAuctionById } from './getAuction.js';
 
 const dynamodb = new DynamoDBClient();
 const AUCTIONS_TABLE = "AuctionsTable";
@@ -10,6 +11,16 @@ const docClient = DynamoDBDocumentClient.from(dynamodb);
 
 async function placeBid(event, context) {
     const { pathParameters: { id }, body: { amount } } = event;
+
+    const auction = await getAuctionById(id);
+
+    if (auction.status !== "OPEN") {
+        throw new createHttpError.BadRequest("You cannot bid on closed auction");
+    }
+    
+    if (amount <= auction.highestBid.amount) {
+        throw new createHttpError.Forbidden(`Your bid must be higher than ${auction.highestBid.amount}`);
+    }
 
     const params = {
         TableName: AUCTIONS_TABLE,

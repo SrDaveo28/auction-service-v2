@@ -18,15 +18,15 @@ async function getAuctions(event, context) {
         const command = new ScanCommand(params);
         const result = await docClient.send(command);
         auctions = result.Items;
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify(auctions),
-        };
     } catch (error) {
         console.error("Error retrieving auctions:", error);
         throw new createHttpError.InternalServerError(error);
     }
+    
+    return {
+        statusCode: 200,
+        body: JSON.stringify(auctions),
+    };
 }
 
 const handler = commonMiddleware(getAuctions);

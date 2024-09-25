@@ -28,6 +28,7 @@ provider:
           Resource:
             - Fn::GetAtt: [UsersTable, Arn]
             - Fn::GetAtt: [AuctionsTable, Arn]
+            - !Sub '${AuctionsTable.Arn}/index/statusAndEndDate'
 
   environment:
     USERS_TABLE: ${param:tableName}
@@ -67,6 +68,11 @@ functions:
           method: PATCH       
           path: /auction/{id}/bid
 
+  processAuctions: 
+    handler: src/handlers/processAuctions.handler
+    events:      
+      - schedule: rate(1 minute)
+
 resources:
   Resources:
     UsersTable:
@@ -87,11 +93,25 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: status
+            AttributeType: S
+          - AttributeName: endingAt
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: AuctionsTable
+        GlobalSecondaryIndexes:
+          - IndexName: statusAndEndDate
+            KeySchema:
+              - AttributeName: status
+                KeyType: HASH
+              - AttributeName: endingAt
+                KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+                
 
 custom:
   bundle:

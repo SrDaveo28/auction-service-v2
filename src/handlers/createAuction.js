@@ -11,12 +11,15 @@ const docClient = DynamoDBDocumentClient.from(dynamodb);
 
 async function createAuction(event, context) {
     const { title } = event.body;
-
+    const now = new Date();
+    const endDate = new Date();
+    endDate.setMinutes(now.getMinutes() + 1);
     const auction = {
         id: uuid(),
         title,
         status: "OPEN",
         createdAt: new Date().toISOString(),
+        endingAt: endDate.toISOString(),
         highestBid: {
             amount: 0
         },
@@ -30,15 +33,15 @@ async function createAuction(event, context) {
     try {
         const command = new PutCommand(params);
         await docClient.send(command);
-
-        return {
-            statusCode: 201,
-            body: JSON.stringify(auction),
-        };
     } catch (error) {
         console.error("Error creating auction:", error);
         throw new createHttpError.InternalServerError(error);
     }
+
+    return {
+        statusCode: 201,
+        body: JSON.stringify(auction),
+    };
 }
 
 const handler = commonMiddleware(createAuction)
