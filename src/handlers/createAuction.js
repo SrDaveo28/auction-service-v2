@@ -4,6 +4,9 @@ import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import createHttpError from 'http-errors';
 import commonMiddleware from '../lib/common.Middleware.js';
 import jsonBodyParser from '@middy/http-json-body-parser';
+import createAuctionSchema from "../lib/schemas/createAuctionSchema.js";
+import validator from '@middy/validator';
+import { transpileSchema } from '@middy/validator/transpile';
 
 const dynamodb = new DynamoDBClient();
 const AUCTIONS_TABLE = "AuctionsTable";
@@ -45,6 +48,9 @@ async function createAuction(event, context) {
 }
 
 const handler = commonMiddleware(createAuction)
-    .use(jsonBodyParser());
+    .use(jsonBodyParser())
+    .use(validator({
+        eventSchema: transpileSchema(createAuctionSchema)
+    }));
 
 export { handler };

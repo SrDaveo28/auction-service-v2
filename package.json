@@ -10,6 +10,7 @@
     "@middy/http-error-handler": "^5.5.0",
     "@middy/http-event-normalizer": "^5.5.0",
     "@middy/http-json-body-parser": "^5.5.0",
+    "@middy/validator": "^5.5.0",
     "express": "^4.19.2",
     "http-errors": "^2.0.0",
     "serverless-http": "^3.2.0",

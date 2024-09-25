@@ -4,6 +4,9 @@ import createHttpError from 'http-errors';
 import commonMiddleware from '../lib/common.Middleware.js';
 import jsonBodyParser from '@middy/http-json-body-parser';
 import { getAuctionById } from './getAuction.js';
+import placeBidSchema from "../lib/schemas/placeBidSchema.js";
+import validator from '@middy/validator';
+import { transpileSchema } from '@middy/validator/transpile';
 
 const dynamodb = new DynamoDBClient();
 const AUCTIONS_TABLE = "AuctionsTable";
@@ -17,7 +20,7 @@ async function placeBid(event, context) {
     if (auction.status !== "OPEN") {
         throw new createHttpError.BadRequest("You cannot bid on closed auction");
     }
-    
+
     if (amount <= auction.highestBid.amount) {
         throw new createHttpError.Forbidden(`Your bid must be higher than ${auction.highestBid.amount}`);
     }
@@ -49,6 +52,9 @@ async function placeBid(event, context) {
 }
 
 const handler = commonMiddleware(placeBid)
-    .use(jsonBodyParser());
+    .use(jsonBodyParser())
+    .use(validator({
+        eventSchema: transpileSchema(placeBidSchema)
+    }));
 
 export { handler };
