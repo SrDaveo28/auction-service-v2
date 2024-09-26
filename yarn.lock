@@ -1642,6 +1642,11 @@ schemes@^1.4.0:
   dependencies:
     extend "^3.0.0"
 
+semver@^7.3.5:
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.3.tgz#980f7b5550bc175fb4dc09403085627f9eb33143"
+  integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
+
 send@0.19.0:
   version "0.19.0"
   resolved "https://registry.yarnpkg.com/send/-/send-0.19.0.tgz#bbc5a388c8ea6c048967049dbeac0e4a3f09d7f8"
@@ -1684,6 +1689,13 @@ serverless-http@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/serverless-http/-/serverless-http-3.2.0.tgz#68acc7735f7c876733c04f038ee20f31f5ebfc9b"
   integrity sha512-QvSyZXljRLIGqwcJ4xsKJXwkZnAVkse1OajepxfjkBXV0BMvRS5R546Z4kCBI8IygDzkQY0foNPC/rnipaE9pQ==
+
+serverless-pseudo-parameters@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/serverless-pseudo-parameters/-/serverless-pseudo-parameters-2.6.1.tgz#0e9511f59741aa149ebe4476adaeaf2be6909ecc"
+  integrity sha512-mHedRk4l7O6OlzFh3++WInQoBfwUy/B10VL0eHMiiV4xwA5hJui45lp00eMSe7Ga0qj1eV91LqeYv8wu98Vekw==
+  dependencies:
+    semver "^7.3.5"
 
 set-function-length@^1.2.1:
   version "1.2.2"

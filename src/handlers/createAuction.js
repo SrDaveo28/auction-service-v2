@@ -14,6 +14,8 @@ const docClient = DynamoDBDocumentClient.from(dynamodb);
 
 async function createAuction(event, context) {
     const { title } = event.body;
+    const { email } = event.requestContext.authorizer;
+
     const now = new Date();
     const endDate = new Date();
     endDate.setMinutes(now.getMinutes() + 1);
@@ -26,6 +28,7 @@ async function createAuction(event, context) {
         highestBid: {
             amount: 0
         },
+        seller: email
     };
 
     const params = {
